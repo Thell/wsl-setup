@@ -61,6 +61,7 @@ set +a
 sudo /usr/sbin/wsl-user-mk-runuserdir
 
 # Create XDG dirs.
+mkdir -p ${XDG_TMP_DIR}
 if [[ ! -f "${XDG_CONFIG_HOME}/user-dirs.dirs" ]]
 then
   mkdir -p \
@@ -72,9 +73,8 @@ then
     ${XDG_LOG_HOME} \
     ${XDG_PROJECTS_DIR} \
     ${XDG_SRC_DIR} \
-    ${XDG_STATE_HOME} \
-    ${XDG_TMP_DIR}
-  ln -sfn ${XDG_TMP_DIR} .local/tmp
+    ${XDG_STATE_HOME}
+  ln -sfn ${XDG_TMP_DIR} ${HOME}/.local/tmp
 
   xdg-user-dirs-update
   xdg-user-dirs-update --set "BIN" ${XDG_BIN_DIR}
