@@ -12,8 +12,8 @@ It will
 
 ### powerline-go with wsl machine name segment.
 URL=https://api.github.com/repos/thell/powerline-go/releases
-URL=$(curl -sS ${URL} | grep download_url | cut -d\" -f4)
-curl -sL ${URL} | tar -xz -C /usr/local/bin
+URL=$(curl ${URL} | grep download_url | cut -d\" -f4)
+curl -L ${URL} | tar -vxz -C /usr/local/bin
 
 cat >> /etc/bash.bashrc << \EOL
 ### Powershell-go

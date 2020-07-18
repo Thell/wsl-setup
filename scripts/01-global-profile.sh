@@ -5,10 +5,8 @@
 Execute this script from Windows as root:
 wsl -d Ubuntu -u root -- ./scripts/00-install-global-profile.sh
 
-It will:
+It will
  - setup locale
- - setup /tmp as tmpfs so that /tmp persists on exit and re-entry
-   and clears on vm shutdown/restarts.
  - add a global profile to
    - create /run/user/${UID} at login
    - export environment variables for $XDG_* paths and create the paths.
@@ -23,9 +21,6 @@ runtime dir setup and provides cleaner ways to setup environment variables.
 ### Locale
 locale-gen en_US.UTF-8
 /usr/sbin/update-locale LANG=en_US.UTF-8
-
-### Setup tmpfs tmp path
-echo "tmpfs /tmp tmpfs mode=1777,nosuid,nodev 0 0"  >> /etc/fstab
 
 ### Runtime dir
 MKRUNUSERDIR_PATH="/usr/sbin/wsl-user-mk-runuserdir"
