@@ -20,16 +20,18 @@ FONT_DIR="/usr/local/share/fonts/truetype/cascadia"
 mkdir -p ${FONT_DIR}
 curl -L -o cascadia-code.zip ${URL}
 unzip cascadia-code.zip ttf/*.ttf -d ${FONT_DIR}
-eatmydata apt -y install fontconfig
 
-# packages=(
-#   ### APT Setup
-#   # With recommends.
-# )
-# eatmydata apt -y --no-install-recommends install ${packages[@]}
+export DEBIAN_FRONTEND=noninteractive
+
+packages=(
+  ### APT Setup
+  # With recommends.
+  fontconfig
+)
+eatmydata apt-get -y install ${packages[@]}
 
 # packages=(
 #   ### APT Setup
 #   # Without recommends.
 # )
-# eatmydata apt -y --no-install-recommends install ${packages[@]}
+# eatmydata apt-get -y --no-install-recommends install ${packages[@]}
