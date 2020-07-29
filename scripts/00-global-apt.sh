@@ -27,7 +27,6 @@ WSL_APTCACHE_PATH="/tmp"
 WSL_APTCACHECONF_PATH="/etc/apt/apt.conf.d/00-wsl-apt-cache"
 cat > ${WSL_APTCACHECONF_PATH} << EOF
 DIR::CACHE::ARCHIVES "${WSL_APTCACHE_PATH}";
-Binary::apt::APT::Keep-Downloaded-Packages "1";
 EOF
 
 DEB_EXTRACT_PATH=/dev/shm/apt/TempDir
@@ -82,9 +81,13 @@ packages=(
   curl
   dialog
   gdebi-core
+  git
+  gnupg
   httpie
   jq
+  software-properties-common
   unzip
+  wget
   xdg-user-dirs
 )
 eatmydata apt -y --no-install-recommends install ${packages[@]}
