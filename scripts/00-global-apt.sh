@@ -67,6 +67,8 @@ cat > ${WSL_PROXYCONF_PATH} << EOF
 Acquire::http::Proxy-Auto-Detect "${WSL_PROXYTEST_PATH}";
 EOF
 
+export DEBIAN_FRONTEND=noninteractive
+
 apt update
 apt -y install eatmydata 
 eatmydata apt -y --with-new-pkgs upgrade
