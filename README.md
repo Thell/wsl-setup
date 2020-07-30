@@ -24,11 +24,6 @@ Using [Github Desktop][Ref:GHDesktop] (or similar) is also advantageous.
 
 ## Notes
 
-~~Docker-Desktop setup with WSL2 backend. ([Docker-Desktop][Ref:Docker-Desktop])~~  
-~~sameersbn/apt-cacher-ng:3.3-20200524 ([Apt-Cacher-ng][Ref:apt-cacher-ng])~~
-
-~~__Docker Apt Cacher__: The `apt-cacher-ng` setup between the WSL2 Distro and Docker container isn't the most reliable setup and I'm not positive as to why but I'm thinking it just has to do with 'priming the pump' and getting everything cached in the first place. Once everything is cached it seems to work just fine. The only reason I'm using it is to save on bandwidth while iterating on getting the whole setup in place to go from base WSL2 Distro installs to custom appx packages for individual projects; so it is definitely _not_ needed.~~
-
 __Apt-Cacher-NG__  
 After being disappointed with the results of using `apt-cacher-ng` between Docker and WSL I decided to try a few alternative setups. An interesting finding was in the network transfer speeds.
 
@@ -48,13 +43,61 @@ Moving the apt-cacher-ng to a WSL Distro _completely_ eliminated the reliability
 | Ubuntu (Focal)  |  107s  |  84s  |
 | Debian (Buster) |   57s  |  42s  |
 
-The base virtual drive size difference (after an initial update and upgrade) from Ubuntu's `1.8GB` and Debian's `543MB` are worth mentioning when considering a simple service setup like this. It'd be nice to be able to make use of the Ubuntu [minimal images][Ref:UbuntuMinimal] for services like this without having to jump through hoops.
+Its also worth noting the virtual drive size difference (after an initial update and upgrade).
+
+| Distro          | Size   |
+|-----------------|--------|
+| Ubuntu (Focal)  |  1.8GB |
+| Debian (Buster) |  543MB |
+
+It'd be nice to be able to make use of Ubuntu [minimal images][Ref:UbuntuMinimal] for services like this.
+
+## Nexus Repository
+
+In the past I used the R CRAN binaries provided by the [cran2deb4ubuntu Build Team][Ref:c2d4u] while building RStudio Desktop containers and other fat builds. This allowed me to take advantage of aria2, aft-fast and squid for some fairly major time improvements.
+
+RStudio now hosts a public [RStudio Package Manager][Ref:RSPM] server providing binary package builds that allows the binary installs from within R and R scripts without `sudo apt` that stays up to date with CRAN. Also, since time, as it does, moves forward I wanted to look at some alternatives to a squid setup with SSL termination and focus on something I could _quickly_ and _easily_ tear down and setup that was more dedicated to package management (npm, R, go, docker and so on) and [Sonatype's Nexus Repository OSS][Ref:Nexus] provides just the thing.
+
+The apt-cacher-ng and Nexus repository on a WSL Debian container are lightning fast! So far, the apt-fast and aria2 seem to just be extra setup and run-time overhead. This will likely be true for my other fat builds since the R packages are not being acquired via apt any more and third party binary packages (github releases and such) can use a Nexus raw proxy type.
+
+Its very common for me to rebuild a basic setup with the latest RStudio Preview, Pandoc, MathJax and MathJax 3rd Party Extensions so I tested, downloading all 4 together, 5 times with each time being in a fresh container and averaged.
+
+| Method | Cached | Time    |
+|--------|--------|---------|
+| wget   | no     | 29.144s |
+| aria2c | no     | 26.937s |
+| wget   | yes    |  1.523s |
+| aria2c | yes    |  1.223s |
+
+Because the Nexus repository is not like a global caching proxy solution the URLs need to be adjusted and since I wont always have the nexus instance running a test is done to see if the proxy is up as well as the normal URL overhead of getting the proper 'latest' URLs.
+
+| Resolve to | Time    |
+|------------|---------|
+| nexus      |  1.243s |
+| remote     |  1.002s |
+
+Seriously... just look at those numbers for the cached downloads and then take out the resolution overhead! **Very nice!**
+
+For something like a Github repo with a 'latest' tagged release the URL is:
+
+From: `https://github.com/jgm/pandoc/releases/latest`  
+
+Resolved Path Suffix:  
+`/jgm/pandoc/releases/download/2.10.1/pandoc-2.10.1-1-amd64.deb`  
+
+Path Prefix:  
+Nexus: `http://localhost:8081/repository/github`  
+Remote: `https://github.com`  
 
 ---------------------------------------
 
 [Ref:apt-cacher-ng]:
 https://hub.docker.com/r/sameersbn/apt-cacher-ng
 "A caching proxy. Specialized for package files from Linux distributors, primarily for Debian (and Debian based) distributions but not limited to those."
+
+[Ref:c2d4u]:
+https://launchpad.net/~c2d4u.team/+archive/ubuntu/c2d4u4.0+
+"A PPA for R packages from CRAN's Task Views built against R 4.0 (and subsequent releases). Only building packages for LTS releases."
 
 [Ref:Docker-Desktop]:
 https://docs.docker.com/docker-for-windows/wsl/
@@ -67,6 +110,14 @@ https://desktop.github.com/
 [Ref:iPerf3]:
 https://iperf.fr/
 "iPerf3 is a tool for active measurements of the maximum achievable bandwidth on IP networks."
+
+[Ref:Nexus]
+https://www.sonatype.com/nexus-repository-oss
+"The free artifact repository with universal format support."
+
+[Ref:RSPM]:
+https://packagemanager.rstudio.com/client/#/
+"RStudio Package Manager is a repository management server to organize and centralize R packages across your team, department, or entire organization."
 
 [Ref:UbuntuMinimal]:
 https://ubuntu.com/blog/minimal-ubuntu-released
