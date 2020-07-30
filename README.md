@@ -76,18 +76,10 @@ Because the Nexus repository is not like a global caching proxy solution the URL
 | nexus      |  1.243s |
 | remote     |  1.002s |
 
-Seriously... just look at those numbers for the cached downloads and then take out the resolution overhead! **Very nice!**
+Seriously... just look at those numbers for the cached downloads and then take out the resolution overhead!
+**Very nice!**
 
-For something like a Github repo with a 'latest' tagged release the URL is:
-
-From: `https://github.com/jgm/pandoc/releases/latest`  
-
-Resolved Path Suffix:  
-`/jgm/pandoc/releases/download/2.10.1/pandoc-2.10.1-1-amd64.deb`  
-
-Path Prefix:  
-Nexus: `http://localhost:8081/repository/github`  
-Remote: `https://github.com`  
+More information on my [Nexus usage](nexus-notes.md) for caching external releases.
 
 ---------------------------------------
 
@@ -111,7 +103,7 @@ https://desktop.github.com/
 https://iperf.fr/
 "iPerf3 is a tool for active measurements of the maximum achievable bandwidth on IP networks."
 
-[Ref:Nexus]
+[Ref:Nexus]:
 https://www.sonatype.com/nexus-repository-oss
 "The free artifact repository with universal format support."
 
