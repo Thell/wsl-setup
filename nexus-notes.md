@@ -10,7 +10,7 @@ Which resolves to a download page of assets for `${TAG}` release. On that page I
 
 `https://github.com/jgm/pandoc/releases/download/${TAG}/pandoc-${TAG}-1-amd64.deb`
 
-Then omit the remote domain portion of the URL `github.com` and create aa similar raw proxy repository on nexus `github` with the remote URL.
+Then omit the remote domain portion of the URL `github.com` and create a similar raw proxy repository on nexus `github` with the remote URL.
 
 This is done in an attempt to keep the URL translation close to the original URL...
 
