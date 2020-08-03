@@ -3,28 +3,23 @@
 : << '//NOTES//'
 
 Execute this script from Windows using:
-wsl -d Ubuntu -u root -- ./scripts/nexus-repositories/focal-rspm40-r-proxy.sh
+wsl -d Ubuntu -u root -- ./scripts/nexus-repositories/focal-texlive-proxy.sh
 
 Assumes Nexus Admin password has not been changed yet and is available using
 $(cat /opt/sonatype-work/nexus3/admin.password)
 
 It will
-- setup a RStudio Package Manager proxy repository on Nexus
+- setup a proxy repository on Nexus to https://mirror.las.iastate.edu/tex-archive/
 
-Usage on client:
-  options(repos = c(REPO_NAME = "http://localhost:8081/repository/focal-rspm-4.0-binary/"))
-
-Nexus sends a fixed User Agent so we only need to set the repos option.
-
-then test...
-  sw.start <- Sys.time(); install.packages("usethis", quiet=TRUE); sw.end <- Sys.time(); sw.end - sw.start
+Usage on client via environment variable (or set via tlmgr):
+  export CTAN_REPO=http://localhost:8081/repository/texlive/tlnet
 
 //NOTES//
 
 REPO_JSON_PATH="/tmp/repo.json"
 cat > ${REPO_JSON_PATH} << \EOF
 {
-  "name": "focal-rspm-4.0-binary",
+  "name": "texlive",
   "online": true,
   "storage": {
     "blobStoreName": "default",
@@ -32,7 +27,7 @@ cat > ${REPO_JSON_PATH} << \EOF
   },
   "cleanup": null,
   "proxy": {
-    "remoteUrl": "https://packagemanager.rstudio.com/all/__linux__/focal/latest",
+    "remoteUrl": "https://mirror.las.iastate.edu/tex-archive/systems/texlive/",
     "contentMaxAge": 1440,
     "metadataMaxAge": 1440
   },
@@ -45,7 +40,7 @@ cat > ${REPO_JSON_PATH} << \EOF
     "autoBlock": true,
     "connection": {
       "retries": 0,
-      "userAgentSuffix": "R/4.0.2 R (4.0.2 x86_64-pc-linux-gnu x86_64 linux-gnu)",
+      "userAgentSuffix": "",
       "timeout": 20,
       "enableCircularRedirects": false,
       "enableCookies": true
@@ -56,7 +51,7 @@ cat > ${REPO_JSON_PATH} << \EOF
 
 EOF
 
-curl "http://localhost:8081/service/rest/beta/repositories/r/proxy" \
+curl "http://localhost:8081/service/rest/beta/repositories/raw/proxy" \
   -vvv --user admin:$(cat /opt/sonatype-work/nexus3/admin.password) \
   -H "accept: application/json" \
   -H "Content-Type: application/json" \

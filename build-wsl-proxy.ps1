@@ -32,5 +32,7 @@ wsl -d $Distro -u $USER -- nexus-start-monitor
 Write-Host 'wsl-nexus-stores' -ForegroundColor "White" -BackgroundColor "Blue"
 wsl -d $Distro -u root -- ./scripts/nexus-repositories/focal-cran40-apt-proxy.sh
 wsl -d $Distro -u root -- ./scripts/nexus-repositories/focal-rspm40-r-proxy.sh
+wsl -d $Distro -u root -- ./scripts/nexus-repositories/github-proxy.sh
+wsl -d $Distro -u root -- ./scripts/nexus-repositories/texlive-proxy.sh
 
 Write-Host 'Complete: ' + $sw.Elapsed.Duration().ToString() -ForegroundColor "White" -BackgroundColor "Blue"
