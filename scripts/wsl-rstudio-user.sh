@@ -65,5 +65,5 @@ mkdir -p ${RS_PREF_INI%/*}
 cat > ${RS_PREF_INI} << \EOF
 [General]
 desktop.renderingEngine=auto
-font.fixedWidth=Cascadia Code
+font.fixedWidth=Cascadia Code PL
 EOF
