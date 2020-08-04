@@ -35,6 +35,12 @@ _nexus_github_archive_master_targz() {
   echo ${URL}
 }
 
+nexus_darkstudio_latest() {
+  # Translate Github Master Tar URL
+  # https://github.com/rileytwo/darkstudio/archive/master.tar.gz
+  _nexus_github_archive_master_targz rileytwo darkstudio
+}
+
 nexus_mathjax_latest() {
   # Translate Latest Github Release Tag URL
   URL=https://github.com/MathJax/MathJax/releases/latest
@@ -77,12 +83,6 @@ nexus_pup_latest_amd64() {
   echo ${URL}
 }
 
-nexus_darkstudio_latest() {
-  # Translate Github Master Tar URL
-  # https://github.com/rileytwo/darkstudio/archive/master.tar.gz
-  _nexus_github_archive_master_targz rileytwo darkstudio
-}
-
 nexus_rscodeio_latest() {
   # Translate Github Master Tar URL
   # https://github.com/anthonynorth/rscodeio/archive/master.tar.gz
@@ -106,13 +106,11 @@ nexus_wsl2_systemd_latest() {
 }
 
 nexus_tinytex_latest() {
-  # Translate Latest Github Release Tag URL
-  URL=https://github.com/yihui/tinytex/releases/latest
-  TAG=$(_gh_latest_release_tag ${URL})
-  URL=https://github.com/yihui/tinytex/archive/${TAG}.tar.gz
+  # Translate direct to proxy.
+  URL=https://yihui.org/tinytex/TinyTeX.tar.gz
   if _nexus_status
   then
-    URL=$(echo ${URL} | sed 's|s://github.com|://localhost:8081/repository/github|')
+    URL=$(echo ${URL} | sed 's|s://yihui.org|://localhost:8081/repository|')
   fi
   echo ${URL}
 }

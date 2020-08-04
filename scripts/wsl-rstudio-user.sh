@@ -19,16 +19,24 @@ mkdir -p $(R -s -e "cat(Sys.getenv(c('R_LIBS_USER')))")
 # Setup windows browser as environment BROWSER
 wsl-open -w
 
-# Complete tinytex package install.
-# TODO: eliminate networking calls that aren't going to proxy.
-export TINYTEX_DIR=${XDG_LIB_HOME}/tinytex
-export CTAN_REPO=http://localhost:8081/repository/texlive/tlnet
-wget -O - $(nexus_tinytex_latest) | tar zxf -
-mv ./tinytex-* ./tinytex
-chmod +x ./tinytex/tools/install-unx.sh
-./tinytex/tools/install-unx.sh
-mv ~/bin/* ${XDG_BIN_DIR}
-rm -r ~/bin ./tinytex
+### TinyTeX
+# Utilize pre-built TinyTex bundle
+cd /tmp
+CTAN_REPO=http://localhost:8081/repository/texlive/tlnet
+TINYTEX_HOME=${XDG_LIB_HOME}/TinyTeX
+mkdir -p ${TINYTEX_HOME}
+mkdir -p ${XDG_DATA_HOME}/info
+mkdir -p ${XDG_DATA_HOME}/man
+wget -O TinyTeX.tar.gz $(nexus_tinytex_latest)
+tar zxf TinyTeX.tar.gz -C ${TINYTEX_HOME} --strip=1
+
+cd ${TINYTEX_HOME}/bin/*/
+./tlmgr repository add ${CTAN_REPO} nexus_ctan
+./tlmgr option repository nexus_ctan
+./tlmgr option sys_bin ${XDG_BIN_DIR}
+./tlmgr option sys_info ${XDG_DATA_HOME}/info
+./tlmgr option sys_man ${XDG_DATA_HOME}/man
+./tlmgr path add
 
 # Setup RStudio Prefs
 mkdir -p ${XDG_PROJECTS_DIR}/scratch

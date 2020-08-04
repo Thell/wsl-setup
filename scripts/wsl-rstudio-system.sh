@@ -83,7 +83,7 @@ RMARKDOWN_MATHJAX_PATH=/usr/local/lib/mathjax
 RSTUDIO_PANDOC=/usr/bin
 
 # Use nexus proxy for tinytex
-TINYTEX_DIR=${XDG_LIB_HOME}/tinytex
+TINYTEX_DIR=${XDG_LIB_HOME}/TinyTeX
 CTAN_REPO=http://localhost:8081/repository/texlive/tlnet
 EOF
 

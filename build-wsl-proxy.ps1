@@ -34,5 +34,6 @@ wsl -d $Distro -u root -- ./scripts/nexus-repositories/focal-cran40-apt-proxy.sh
 wsl -d $Distro -u root -- ./scripts/nexus-repositories/focal-rspm40-r-proxy.sh
 wsl -d $Distro -u root -- ./scripts/nexus-repositories/github-proxy.sh
 wsl -d $Distro -u root -- ./scripts/nexus-repositories/texlive-proxy.sh
+wsl -d $Distro -u root -- ./scripts/nexus-repositories/tinytex-proxy.sh
 
 Write-Host 'Complete: ' + $sw.Elapsed.Duration().ToString() -ForegroundColor "White" -BackgroundColor "Blue"
