@@ -1,26 +1,49 @@
 #!/bin/bash
+. ./scripts/99-nexus-translate.sh
 
 : << '//NOTES//'
 
 Execute this script from Windows as root:
-wsl -d Ubuntu -u root -- ./scripts/11-common-gui.sh
+wsl -d Ubuntu -u root -- ./scripts/03-global-gui.sh
 
 It will
- - setup cascadia code availability.
+ - setup cascadia code.
+ - setup firacode.
  - setup emoji font support.
  - install basic X libs.
 
+* Avoid mounting the Windows font dir; it slows down some app startup times.
+
 //NOTES//
 
-### Cascadia Code ttf font for GUI apps.
-# Mounting the full Windows font dir can slow down some app startup times.
 cd /tmp
-URL=https://api.github.com/repos/microsoft/cascadia-code/releases/latest
-URL=$(curl ${URL} | grep download_url | cut -d\" -f4)
-FONT_DIR="/usr/local/share/fonts/truetype/cascadia"
-mkdir -p ${FONT_DIR}
-curl -L -o cascadia-code.zip ${URL}
-unzip cascadia-code.zip ttf/*.ttf -d ${FONT_DIR}
+
+FONT_DIR="/usr/local/share/fonts/truetype"
+
+mkdir -p ${FONT_DIR}/cascadia-code
+wget -q -O cascadia-code.zip $(nexus_cascadiacode_latest)
+unzip -q cascadia-code.zip ttf/*.ttf -d ${FONT_DIR}/cascadia-code
+
+mkdir -p ${FONT_DIR}/firacode
+wget -q -O firacode.zip $(nexus_firacode_latest)
+unzip -q firacode.zip ttf/*.ttf -d ${FONT_DIR}/firacode
+
+# Firacode isn't recognized as a monospaced font by RStudio
+# so manually configure the spacing.
+cat > /etc/fonts/conf.d/90-firacode-spacing.conf << \EOL
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+<match target="scan">
+    <test name="family">
+      <string>Fira Code</string>
+    </test>
+    <edit name="spacing">
+      <int>100</int>
+    </edit>
+  </match>
+</fontconfig>
+EOL
 
 export DEBIAN_FRONTEND=noninteractive
 packages=(
