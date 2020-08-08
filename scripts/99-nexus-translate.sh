@@ -35,10 +35,34 @@ _nexus_github_archive_master_targz() {
   echo ${URL}
 }
 
+nexus_cascadiacode_latest() {
+  # Translate Latest Github Release Tag URL
+  URL=https://github.com/microsoft/cascadia-code/releases/latest
+  TAG=$(_gh_latest_release_tag ${URL})
+  URL=https://github.com/microsoft/cascadia-code/releases/download/${TAG}/CascadiaCode-${TAG:1}.zip
+  if _nexus_status
+  then
+    URL=$(echo ${URL} | sed 's|s://github.com|://localhost:8081/repository/github|')
+  fi
+  echo ${URL}
+}
+
 nexus_darkstudio_latest() {
   # Translate Github Master Tar URL
   # https://github.com/rileytwo/darkstudio/archive/master.tar.gz
   _nexus_github_archive_master_targz rileytwo darkstudio
+}
+
+nexus_firacode_latest() {
+  # Translate Latest Github Release Tag URL
+  URL=https://github.com/tonsky/FiraCode/releases/latest
+  TAG=$(_gh_latest_release_tag ${URL})
+  URL=https://github.com/tonsky/FiraCode/releases/download/${TAG}/Fira_Code_v${TAG}.zip
+  if _nexus_status
+  then
+    URL=$(echo ${URL} | sed 's|s://github.com|://localhost:8081/repository/github|')
+  fi
+  echo ${URL}
 }
 
 nexus_mathjax_latest() {
@@ -96,6 +120,18 @@ nexus_rstudio_latest_amd64() {
   if _nexus_status
   then
     URL=$(echo ${URL} | sed 's|s://s3.amazonaws.com|://localhost:8081/repository|')
+  fi
+  echo ${URL}
+}
+
+nexus_wsl_powerline_go() {
+  # Translate Latest Github Release Tag URL
+  URL=https://github.com/Thell/powerline-go/releases/latest
+  TAG=$(_gh_latest_release_tag ${URL})
+  URL=https://github.com/Thell/powerline-go/releases/download/${TAG}/powerline-go.tar.gz
+  if _nexus_status
+  then
+    URL=$(echo ${URL} | sed 's|s://github.com|://localhost:8081/repository/github|')
   fi
   echo ${URL}
 }
