@@ -8,10 +8,16 @@ Execute this script from Windows as user:
 wsl -d Ubuntu -u root -- ./scripts/wsl-rstudio-support-apps.sh
 
 It will setup
-  - openJDK (default-jdk)
+  - mathjax (with 3rd party contributions) for rmarkdown
   - meld
+  - openJDK (default-jdk)
+  - pandoc for rmarkdown
+  - wsl-open for wsl interop
 
 //NOTES//
+
+export DEBIAN_FRONTEND=noninteractive
+
 apt update
 apt -y upgrade
 
@@ -31,7 +37,7 @@ cd /tmp
 equivs-build ~/texlive-local.txt
 dpkg -i ./texlive-local_*.deb
 
-# Ramrkdown install prep.
+# Rmarkdown install prep.
 wget -q -O pandoc.deb $(nexus_pandoc_latest_amd64)
 gdebi -n ./pandoc.deb
 
