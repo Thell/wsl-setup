@@ -1,25 +1,20 @@
 #!/bin/bash
+. ./scripts/99-nexus-translate.sh
 
 : << '//NOTES//'
 
 Execute this script from Windows as root:
-wsl -d Ubuntu -u root -- ./scripts/02-global-apt.sh
+wsl -d Ubuntu -u root -- ./scripts/00-global-apt.sh
 
 It will
  - setup /tmp as tmpfs (persists on exit, clears on vm shutdown).
  - setup tmpfs apt archives via /tmp.
  - setup tmpfs .deb extraction via /dev/shm.
- - setup apt-cache-ng proxy detection.
+ - setup apt-cacher-ng proxy detection.
  - install some common tools used when downloading and installing packages.
 
 //NOTES//
 
-WSL_APTLANGUAGE_PATH="/etc/apt/apt.conf.d/00-wsl-apt-language"
-cat > ${WSL_APTLANGUAGE_PATH} << EOF
-Acquire::Languages "none";
-EOF
-
-### Setup tmpfs tmp path
 echo "tmpfs /tmp tmpfs mode=1777,nosuid,nodev 0 0"  >> /etc/fstab
 mount -a
 
@@ -37,6 +32,11 @@ DPkg {
   Pre-Invoke  { "mkdir -p ${DEB_EXTRACT_PATH}" };
   Post-Invoke { "rm -rf ${DEB_EXTRACT_PATH}" };
 };
+EOF
+
+WSL_APTLANGUAGE_PATH="/etc/apt/apt.conf.d/00-wsl-apt-language"
+cat > ${WSL_APTLANGUAGE_PATH} << EOF
+Acquire::Languages "none";
 EOF
 
 ### apt-cacher-ng proxy
@@ -58,7 +58,6 @@ if [ "X$STATUS" = "X0" ]; then
 else
   echo "DIRECT"
 fi
-
 EOF
 chmod +x ${WSL_PROXYTEST_PATH}
 
@@ -95,9 +94,5 @@ packages=(
 eatmydata apt -y --no-install-recommends install ${packages[@]}
 
 cd /tmp
-URL=https://api.github.com/repos/EricChiang/pup/releases/latest
-RE_PATTERN="browser_download_url.*linux_amd64"
-URL=$(curl ${URL} | grep ${RE_PATTERN} | cut -d\" -f4)
-ZIP_PATH=/tmp/pup.zip
-curl -L -o ${ZIP_PATH} ${URL}
-unzip -d /usr/local/bin/ ${ZIP_PATH}
+wget -q -O pup.zip $(nexus_pup_latest_amd64)
+unzip -q pup.zip -d /usr/local/bin/
