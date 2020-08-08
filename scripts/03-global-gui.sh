@@ -2,22 +2,18 @@
 . ./scripts/99-nexus-translate.sh
 
 : << '//NOTES//'
+  Execute this script from Windows as root:
+  wsl -d Ubuntu -u root -- ./scripts/03-global-gui.sh
 
-Execute this script from Windows as root:
-wsl -d Ubuntu -u root -- ./scripts/03-global-gui.sh
+  It will
+  - setup cascadia code.
+  - setup firacode.
+  - setup emoji font support.
 
-It will
- - setup cascadia code.
- - setup firacode.
- - setup emoji font support.
- - install basic X libs.
-
-* Avoid mounting the Windows font dir; it slows down some app startup times.
-
+  * Avoid mounting the Windows font dir; it slows down some app startup times.
 //NOTES//
 
 cd /tmp
-
 FONT_DIR="/usr/local/share/fonts/truetype"
 
 mkdir -p ${FONT_DIR}/cascadia-code
@@ -28,8 +24,7 @@ mkdir -p ${FONT_DIR}/firacode
 wget -q -O firacode.zip $(nexus_firacode_latest)
 unzip -q firacode.zip ttf/*.ttf -d ${FONT_DIR}/firacode
 
-# Firacode isn't recognized as a monospaced font by RStudio
-# so manually configure the spacing.
+# Manually configure FiraCode spacing for RStudio.
 cat > /etc/fonts/conf.d/90-firacode-spacing.conf << \EOL
 <?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
@@ -47,8 +42,6 @@ EOL
 
 export DEBIAN_FRONTEND=noninteractive
 packages=(
-  ### APT Setup
-  # With recommends.
   fonts-noto-color-emoji
   fonts-ubuntu-console
   fontconfig
