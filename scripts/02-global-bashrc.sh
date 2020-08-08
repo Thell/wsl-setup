@@ -1,21 +1,24 @@
 #!/bin/bash
+. ./scripts/99-nexus-translate.sh
 
 : << '//NOTES//'
 
 Execute this script from Windows as root:
-wsl -d Ubuntu -u root -- ./scripts/01-install-global-bashrc.sh
+wsl -d Ubuntu -u root -- ./scripts/02-global-bashrc.sh
 
 It will
  - setup global powerline-go prompt.
 
 //NOTES//
 
+cd /tmp
+
 ### powerline-go with wsl machine name segment.
-URL=https://api.github.com/repos/thell/powerline-go/releases
-URL=$(curl ${URL} | grep download_url | cut -d\" -f4)
-curl -L ${URL} | tar -vxz -C /usr/local/bin
+wget -q -O powerline.tar.gz $(nexus_wsl_powerline_go)
+tar -C /usr/local/bin -zxf powerline.tar.gz
 
 cat >> /etc/bash.bashrc << \EOL
+
 ### Powershell-go
 # `User` segment when not WSL default user.
 # Only use hostname if ssh.
@@ -31,5 +34,4 @@ function _update_ps1() {
 if [ "$TERM" != "linux" ] && [ -x "$(command -v powerline-go)" ]; then
   PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 fi
-
 EOL
