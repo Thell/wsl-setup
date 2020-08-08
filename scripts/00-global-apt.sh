@@ -74,9 +74,7 @@ eatmydata apt -y --with-new-pkgs upgrade
 apt update
 
 packages=(
-  ### APT Setup
   # Without recommends.
-  aria2
   build-essential
   ca-certificates
   curl
@@ -84,15 +82,9 @@ packages=(
   gdebi-core
   git
   gnupg
-  httpie
-  jq
   software-properties-common
   unzip
   wget
   xdg-user-dirs
 )
 eatmydata apt -y --no-install-recommends install ${packages[@]}
-
-cd /tmp
-wget -q -O pup.zip $(nexus_pup_latest_amd64)
-unzip -q pup.zip -d /usr/local/bin/
