@@ -3,7 +3,7 @@
 : << '//NOTES//'
 
 Execute this script from Windows as root:
-wsl -d Ubuntu -u root -- ./scripts/00-install-global-profile.sh
+wsl -d Ubuntu -u root -- ./scripts/01-global-profile.sh
 
 It will
  - setup locale
@@ -30,7 +30,6 @@ RUNUSER_DIR="/run/user"
 UID=$(id -u ${SUDO_USER})
 sudo mkdir -m 0700 -p ${RUNUSER_DIR}/${UID}
 sudo chown ${UID}:${UID} ${RUNUSER_DIR}/${UID}
-
 EOF
 chmod +x ${MKRUNUSERDIR_PATH}
 echo "%sudo ALL = NOPASSWD: ${MKRUNUSERDIR_PATH}" >\
@@ -88,5 +87,4 @@ NO_AT_BRIDGE="1"
 QT_SCALE_FACTOR="1.2"
 QT_X11_NO_MITSHM="1"
 set +a
-
 EOF
