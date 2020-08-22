@@ -71,7 +71,7 @@ EOF
 
 ### Nexus Proxy
 # URL translator for boostrap assets.
-cp ${SCRIPT_PATH}/99-nexus-translate.sh /usr/local/bin/wsl-proxied-url
+cp ${SCRIPT_PATH}/99-wsl-proxied-url.sh /usr/local/bin/wsl-proxied-url
 chmod +x /usr/local/bin/wsl-proxied-url
 
 export DEBIAN_FRONTEND=noninteractive
