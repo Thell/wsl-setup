@@ -1,9 +1,7 @@
-#!/bin/bash
-. ./scripts/99-nexus-translate.sh
-cp ./scripts/texlive-local.txt ~/texlive-local.txt
+#!/usr/bin/env bash
 
-: << '//NOTES//'
-
+: <<\#*************************************************************************
+ 
 Execute this script from Windows as user:
 wsl -d Ubuntu -u root -- ./scripts/wsl-rstudio-support-apps.sh
 
@@ -14,12 +12,14 @@ It will setup
   - pandoc for rmarkdown
   - wsl-open for wsl interop
 
-//NOTES//
+#*************************************************************************
+
+SCRIPT_PATH=$(readlink --canonicalize --no-newline "${BASH_SOURCE%/*}")
+cd ~
 
 export DEBIAN_FRONTEND=noninteractive
-
-apt update
-apt -y upgrade
+apt-get update
+apt-get -y upgrade
 
 packages=(
   default-jdk
@@ -30,25 +30,26 @@ packages=(
   perl-tk
   xdg-utils
 )
-apt install -y --no-install-recommends ${packages[@]}
+apt-get -y --no-install-recommends install ${packages[@]}
 
 # TinyTex install prep, holds TexLive installs.
 cd /tmp
-equivs-build ~/texlive-local.txt
+equivs-build ${SCRIPT_PATH}/texlive-local.txt
 dpkg -i ./texlive-local_*.deb
 
 # Rmarkdown install prep.
-wget -q -O pandoc.deb $(nexus_pandoc_latest_amd64)
+wget -q -O pandoc.deb $(wsl-proxied-url pandoc)
 gdebi -n ./pandoc.deb
 
-mkdir -p /usr/local/lib/mathjax/contrib
-wget -q -O mathjax.tar.gz $(nexus_mathjax_latest)
-wget -q -O mathjax-contrib.tar.gz $(nexus_mathjax_3rd_party_latest)
-tar -C /usr/local/lib/mathjax/ --strip-components 1 -zxf mathjax.tar.gz
-tar -C /usr/local/lib/mathjax/contrib --strip-components 1 -zxf mathjax-contrib.tar.gz
+MATHJAX_DIR=/usr/local/lib/mathjax
+mkdir -p ${MATHJAX_DIR}/contrib
+wget -q -O mathjax.tar.gz $(wsl-proxied-url mathjax)
+wget -q -O mathjax-contrib.tar.gz $(wsl-proxied-url mathjax-third-party-extensions)
+tar -C ${MATHJAX_DIR} --strip-components 1 -zxf mathjax.tar.gz
+tar -C ${MATHJAX_DIR}/contrib --strip-components 1 -zxf mathjax-contrib.tar.gz
 
 # Open via Windows Interop.
-curl -o /usr/local/bin/wsl-open https://raw.githubusercontent.com/4U6U57/wsl-open/master/wsl-open.sh
+curl -o /usr/local/bin/wsl-open $(wsl-proxied-url wsl-open)
 chmod 755 /usr/local/bin/wsl-open
 
 # RMarkdown Output Types (web types added in 'user' setup script).

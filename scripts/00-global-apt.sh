@@ -1,7 +1,6 @@
-#!/bin/bash
-. ./scripts/99-nexus-translate.sh
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
 Execute this script from Windows as root:
 wsl -d Ubuntu -u root -- ./scripts/00-global-apt.sh
@@ -11,9 +10,13 @@ It will
  - setup tmpfs apt archives via /tmp.
  - setup tmpfs .deb extraction via /dev/shm.
  - setup apt-cacher-ng proxy detection.
+ - setup nexus proxied url translator.
  - install some common tools used when downloading and installing packages.
 
-//NOTES//
+#*************************************************************************
+
+SCRIPT_PATH=$(readlink --canonicalize --no-newline "${BASH_SOURCE%/*}")
+cd ~
 
 echo "tmpfs /tmp tmpfs mode=1777,nosuid,nodev 0 0"  >> /etc/fstab
 mount -a
@@ -66,6 +69,11 @@ cat > ${WSL_PROXYCONF_PATH} << EOF
 Acquire::http::Proxy-Auto-Detect "${WSL_PROXYTEST_PATH}";
 EOF
 
+### Nexus Proxy
+# URL translator for boostrap assets.
+cp ${SCRIPT_PATH}/99-nexus-translate.sh /usr/local/bin/wsl-proxied-url
+chmod +x /usr/local/bin/wsl-proxied-url
+
 export DEBIAN_FRONTEND=noninteractive
 
 apt update
@@ -82,6 +90,7 @@ packages=(
   gdebi-core
   git
   gnupg
+  jq
   software-properties-common
   unzip
   wget

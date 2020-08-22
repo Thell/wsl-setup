@@ -1,152 +1,87 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
-This script is meant to be sourced during WSL distro builds to provide
-helper functions for acquiring URLs of installable packages.
+Utilized as part of wsl distro setups.
+  - Returns nexus proxy url if active or canonical download url when not.
 
-Returns either the nexus translated or canonical download url.
+#*************************************************************************
 
-//NOTES//
+asset=$1
 
-_nexus_status() {
-  HTTP_STATUS=$(curl -s -w '%{http_code}\n' -X GET http://localhost:8081/service/rest/v1/status)
-  [[ ${HTTP_STATUS} -eq 200 ]]
-}
-
-_url_effective() {
-  curl -s -I -w '%{url_effective}\n' -L $1 -o /dev/null
-}
+if (echo "GET /service/rest/v1/status" >/dev/tcp/localhost/8081) &>/dev/null
+then
+  base_url="http://localhost:8081/repository"
+fi
 
 _gh_latest_release_tag() {
-  URL=$(_url_effective $1)
-  echo ${URL##*/}
+  path=$1
+  url=https://api.github.com/repos${path}/latest
+  [[ ${base_url:-} ]] && url=${url/"http"?":/"/"${base_url}"}
+  tag=$(jq -r '.tag_name' <(curl -s ${url}))
+  echo ${tag}
 }
 
-_nexus_github_archive_master_targz() {
-  # Translate Github Repository Master tar bundle URL
-  USER=$1
-  REPO=$2
-  URL=https://github.com/${USER}/${REPO}/archive/master.tar.gz
-  if _nexus_status
-  then
-    URL=http://localhost:8081/repository/github/${USER}/${REPO}/archive/master.tar.gz
-  fi
-  echo ${URL}
-}
+case "${asset,,}" in
+  "cascadia-code")
+    path=/microsoft/cascadia-code/releases
+    tag=$(_gh_latest_release_tag ${path})
+    : https://github.com${path}/download/${tag}/CascadiaCode-${tag:1}.zip
+  ;;
+  "darkstudio")
+    : https://github.com/rileytwo/darkstudio/archive/master.tar.gz
+  ;;
+  "firacode")
+    path=/tonsky/FiraCode/releases
+    tag=$(_gh_latest_release_tag ${path})
+    : https://github.com${path}/download/${tag}/Fira_Code_v${tag}.zip
+  ;;
+  "mathjax")
+    path=/MathJax/MathJax/releases
+    tag=$(_gh_latest_release_tag ${path})
+    : https://github.com${path}/archive/${tag}.tar.gz
+  ;;
+  "mathjax-third-party-extensions")
+    : https://github.com/mathjax/MathJax-third-party-extensions/archive/master.tar.gz
+  ;;
+  "pandoc")
+    path=/jgm/pandoc/releases
+    tag=$(_gh_latest_release_tag ${path})
+    : https://github.com${path}/download/${tag}/pandoc-${tag}-1-amd64.deb
+  ;;
+  "powerline-go")
+    path=/thell/powerline-go/releases
+    tag=$(_gh_latest_release_tag ${path})
+    : https://github.com${path}/download/${tag}/powerline-go.tar.gz
+  ;;
+  "pup")
+    path=/EricChiang/pup/releases
+    tag=$(_gh_latest_release_tag ${path})
+    : https://github.com${path}/download/${tag}/pup_${tag}_linux_amd64.zip
+  ;;
+  "rscodeio")
+    : https://github.com/anthonynorth/rscodeio/archive/master.tar.gz
+  ;;
+  "rstudio")
+    path=".preview.desktop.bionic.rstudio"
+    url=https://github.com/thell/rstudio-latest-urls/raw/master/latest.json
+    [[ ${base_url:-} ]] && url=${url/"http:/"/"${base_url}"}
+    : $(jq -r ${path} <(curl -s -L ${url}))
+  ;;
+  "tinytex")
+    : https://yihui.org/tinytex/TinyTeX.tar.gz
+  ;;
+  "ubuntu-wsl2-systemd-script")
+    : https://github.com/DamionGans/ubuntu-wsl2-systemd-script/master.tar.gz
+  ;;
+  "wsl-open")
+    : https://github.com/4U6U57/wsl-open/raw/master/wsl-open.sh
+  ;;
+  *)
+    exit 1
+  ;;
+esac
+url="$_"
 
-nexus_cascadiacode_latest() {
-  # Translate Latest Github Release Tag URL
-  URL=https://github.com/microsoft/cascadia-code/releases/latest
-  TAG=$(_gh_latest_release_tag ${URL})
-  URL=https://github.com/microsoft/cascadia-code/releases/download/${TAG}/CascadiaCode-${TAG:1}.zip
-  if _nexus_status
-  then
-    URL=$(echo ${URL} | sed 's|s://github.com|://localhost:8081/repository/github|')
-  fi
-  echo ${URL}
-}
-
-nexus_darkstudio_latest() {
-  # Translate Github Master Tar URL
-  # https://github.com/rileytwo/darkstudio/archive/master.tar.gz
-  _nexus_github_archive_master_targz rileytwo darkstudio
-}
-
-nexus_firacode_latest() {
-  # Translate Latest Github Release Tag URL
-  URL=https://github.com/tonsky/FiraCode/releases/latest
-  TAG=$(_gh_latest_release_tag ${URL})
-  URL=https://github.com/tonsky/FiraCode/releases/download/${TAG}/Fira_Code_v${TAG}.zip
-  if _nexus_status
-  then
-    URL=$(echo ${URL} | sed 's|s://github.com|://localhost:8081/repository/github|')
-  fi
-  echo ${URL}
-}
-
-nexus_mathjax_latest() {
-  # Translate Latest Github Release Tag URL
-  URL=https://github.com/MathJax/MathJax/releases/latest
-  TAG=$(_gh_latest_release_tag ${URL})
-  URL=https://github.com/mathjax/MathJax/archive/${TAG}.tar.gz
-  if _nexus_status
-  then
-    URL=$(echo ${URL} | sed 's|s://github.com|://localhost:8081/repository/github|')
-  fi
-  echo ${URL}
-}
-
-nexus_mathjax_3rd_party_latest() {
-  # Translate Github Master Tar URL
-  # https://github.com/mathjax/MathJax-third-party-extensions/archive/master.tar.gz
-  _nexus_github_archive_master_targz mathjax Mathjax-third-party-extensions
-}
-
-nexus_pandoc_latest_amd64() {
-  # Translate Latest Github Release Tag URL
-  URL=https://github.com/jgm/pandoc/releases/latest
-  TAG=$(_gh_latest_release_tag ${URL})
-  URL=https://github.com/jgm/pandoc/releases/download/${TAG}/pandoc-${TAG}-1-amd64.deb
-  if _nexus_status
-  then
-    URL=$(echo ${URL} | sed 's|s://github.com|://localhost:8081/repository/github|')
-  fi
-  echo ${URL}
-}
-
-nexus_pup_latest_amd64() {
-  # Translate Latest Github Release Tag URL
-  URL=https://github.com/EricChiang/pup/releases/latest
-  TAG=$(_gh_latest_release_tag ${URL})
-  URL=https://github.com/ericchiang/pup/releases/download/${TAG}/pup_${TAG}_linux_amd64.zip
-  if _nexus_status
-  then
-    URL=$(echo ${URL} | sed 's|s://github.com|://localhost:8081/repository/github|')
-  fi
-  echo ${URL}
-}
-
-nexus_rscodeio_latest() {
-  # Translate Github Master Tar URL
-  # https://github.com/anthonynorth/rscodeio/archive/master.tar.gz
-  _nexus_github_archive_master_targz anthonynorth rscodeio
-}
-
-nexus_rstudio_latest_amd64() {
-  # Translate RStudio IDE OSS Preview Latest Release Tag URL
-  URL=https://rstudio.org/download/latest/preview/desktop/bionic/rstudio-latest-amd64.deb
-  URL=$(_url_effective ${URL})
-  if _nexus_status
-  then
-    URL=$(echo ${URL} | sed 's|s://s3.amazonaws.com|://localhost:8081/repository|')
-  fi
-  echo ${URL}
-}
-
-nexus_wsl_powerline_go() {
-  # Translate Latest Github Release Tag URL
-  URL=https://github.com/Thell/powerline-go/releases/latest
-  TAG=$(_gh_latest_release_tag ${URL})
-  URL=https://github.com/Thell/powerline-go/releases/download/${TAG}/powerline-go.tar.gz
-  if _nexus_status
-  then
-    URL=$(echo ${URL} | sed 's|s://github.com|://localhost:8081/repository/github|')
-  fi
-  echo ${URL}
-}
-
-nexus_wsl2_systemd_latest() {
-  # Translate Github Master Tar URL
-  _nexus_github_archive_master_targz DamionGans ubuntu-wsl2-systemd-script
-}
-
-nexus_tinytex_latest() {
-  # Translate direct to proxy.
-  URL=https://yihui.org/tinytex/TinyTeX.tar.gz
-  if _nexus_status
-  then
-    URL=$(echo ${URL} | sed 's|s://yihui.org|://localhost:8081/repository|')
-  fi
-  echo ${URL}
-}
+[[ ${base_url:-} ]] && url=${url/"http"?":/"/"${base_url}"}
+echo ${url}

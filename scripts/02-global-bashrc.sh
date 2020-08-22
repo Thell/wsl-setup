@@ -1,7 +1,6 @@
-#!/bin/bash
-. ./scripts/99-nexus-translate.sh
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
 Execute this script from Windows as root:
 wsl -d Ubuntu -u root -- ./scripts/02-global-bashrc.sh
@@ -9,12 +8,12 @@ wsl -d Ubuntu -u root -- ./scripts/02-global-bashrc.sh
 It will
  - setup global powerline-go prompt.
 
-//NOTES//
+#*************************************************************************
 
 cd /tmp
 
 ### powerline-go with wsl machine name segment.
-wget -q -O powerline.tar.gz $(nexus_wsl_powerline_go)
+wget -q -O powerline.tar.gz $(wsl-proxied-url powerline-go)
 tar -C /usr/local/bin -zxf powerline.tar.gz
 
 cat >> /etc/bash.bashrc << \EOL
