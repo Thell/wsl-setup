@@ -33,7 +33,11 @@ Write-Host 'wsl-nexus-stores' -ForegroundColor "White" -BackgroundColor "Blue"
 wsl -d $Distro -u root -- ./scripts/nexus-repositories/focal-cran40-apt-proxy.sh
 wsl -d $Distro -u root -- ./scripts/nexus-repositories/focal-rspm40-r-proxy.sh
 wsl -d $Distro -u root -- ./scripts/nexus-repositories/github-proxy.sh
+wsl -d $Distro -u root -- ./scripts/nexus-repositories/api-github-proxy.sh
+wsl -d $Distro -u root -- ./scripts/nexus-repositories/raw-githubusercontent-proxy.sh
+wsl -d $Distro -u root -- ./scripts/nexus-repositories/s3-amazonaws-proxy.sh
 wsl -d $Distro -u root -- ./scripts/nexus-repositories/texlive-proxy.sh
 wsl -d $Distro -u root -- ./scripts/nexus-repositories/tinytex-proxy.sh
 
 Write-Host 'Complete: ' + $sw.Elapsed.Duration().ToString() -ForegroundColor "White" -BackgroundColor "Blue"
+Write-Host "Logon to Nexus Repository to set admin password."
