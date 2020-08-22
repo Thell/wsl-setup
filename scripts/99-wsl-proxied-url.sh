@@ -37,9 +37,9 @@ case "${asset,,}" in
     : https://github.com${path}/download/${tag}/Fira_Code_v${tag}.zip
   ;;
   "mathjax")
-    path=/MathJax/MathJax/releases
+    path=/mathjax/MathJax/releases
     tag=$(_gh_latest_release_tag ${path})
-    : https://github.com${path}/archive/${tag}.tar.gz
+    : https://github.com/mathjax/MathJax/archive/${tag}.tar.gz
   ;;
   "mathjax-third-party-extensions")
     : https://github.com/mathjax/MathJax-third-party-extensions/archive/master.tar.gz
@@ -64,9 +64,9 @@ case "${asset,,}" in
   ;;
   "rstudio")
     path=".preview.desktop.bionic.rstudio"
-    url=https://github.com/thell/rstudio-latest-urls/raw/master/latest.json
-    [[ ${base_url:-} ]] && url=${url/"http:/"/"${base_url}"}
-    : $(jq -r ${path} <(curl -s -L ${url}))
+    url=https://raw.githubusercontent.com/thell/rstudio-latest-urls/master/latest.json
+    [[ ${base_url:-} ]] && url=${url/"http"?":/"/"${base_url}"}
+    : $(jq -r ${path} <(curl -s ${url}))
   ;;
   "tinytex")
     : https://yihui.org/tinytex/TinyTeX.tar.gz
@@ -75,7 +75,7 @@ case "${asset,,}" in
     : https://github.com/DamionGans/ubuntu-wsl2-systemd-script/master.tar.gz
   ;;
   "wsl-open")
-    : https://github.com/4U6U57/wsl-open/raw/master/wsl-open.sh
+    : https://raw.githubusercontent.com/4U6U57/wsl-open/master/wsl-open.sh
   ;;
   *)
     exit 1
