@@ -38,13 +38,14 @@ equivs-build ${SCRIPT_PATH}/texlive-local.txt
 dpkg -i ./texlive-local_*.deb
 
 # Rmarkdown install prep.
-wget -q -O pandoc.deb $(wsl-proxied-url pandoc)
+wget -O pandoc.deb $(wsl-proxied-url pandoc)
 gdebi -n ./pandoc.deb
 
 MATHJAX_DIR=/usr/local/lib/mathjax
+mkdir -p ${MATHJAX_DIR}
 mkdir -p ${MATHJAX_DIR}/contrib
-wget -q -O mathjax.tar.gz $(wsl-proxied-url mathjax)
-wget -q -O mathjax-contrib.tar.gz $(wsl-proxied-url mathjax-third-party-extensions)
+wget -O mathjax.tar.gz $(wsl-proxied-url mathjax)
+wget -O mathjax-contrib.tar.gz $(wsl-proxied-url mathjax-third-party-extensions)
 tar -C ${MATHJAX_DIR} --strip-components 1 -zxf mathjax.tar.gz
 tar -C ${MATHJAX_DIR}/contrib --strip-components 1 -zxf mathjax-contrib.tar.gz
 
