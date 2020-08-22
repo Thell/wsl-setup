@@ -3,16 +3,16 @@
 : <<\#*************************************************************************
 
 Execute this script from Windows using:
-wsl -d Ubuntu -u root -- ./scripts/nexus-repositories/github-proxy.sh
+wsl -d Ubuntu -u root -- ./scripts/nexus-repositories/api-github-proxy.sh
 
 Assumes Nexus Admin password has not been changed yet and is available using
 $(cat /opt/sonatype-work/nexus3/admin.password)
 
 It will
-- setup a proxy repository on Nexus to https://github.com
+- setup a proxy repository on Nexus to https://api.github.com
 
-Usage on client should be for releases and bundles:
-  http://localhost:8081/repository/github
+Usage on client should be for api calls:
+  http://localhost:8081/repository/api.github.com
 
 #*************************************************************************
 
