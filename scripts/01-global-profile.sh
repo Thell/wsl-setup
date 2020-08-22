@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
 Execute this script from Windows as root:
 wsl -d Ubuntu -u root -- ./scripts/01-global-profile.sh
@@ -16,7 +16,7 @@ If systemd is active then this script shouldn't be used.
 `systemctl enable tmp.mount` enabled tmp on tmpfs, it already handles
 runtime dir setup and provides cleaner ways to setup environment variables.
 
-//NOTES//
+#*************************************************************************
 
 ### Locale
 locale-gen en_US.UTF-8

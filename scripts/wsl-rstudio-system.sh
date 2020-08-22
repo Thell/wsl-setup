@@ -1,27 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 . ./scripts/99-nexus-translate.sh
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
 Execute this script from Windows as user:
 wsl -d Ubuntu -u root -- ./scripts/wsl-rstudio-system.sh
 
 It will
   - setup R
-  - RStudio Desktop Preview
-- configure RStudio to use
-  - System Pandoc
-  - System Mathjax
+  - install latest RStudio Desktop Preview
+  - setup to use latest system
+    - Pandoc
+    - Mathjax
 
 Installing devtools and tidyverse gives more common packages than I need
 for general purpose scripting and basic package dev...
 
-//NOTES//
+#*************************************************************************
 
-### R Install
+### R
+# Use nexus proxy of cran.
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 apt-add-repository "deb http://localhost:8081/repository/focal-cran-4.0-proxy focal-cran40/"
 
+# r-base (r-base-core, r-recommended, r-base-dev, etc...).
 packages=(
   libcurl4-gnutls-dev
   libssh2-1-dev
@@ -87,7 +89,7 @@ TINYTEX_DIR=${XDG_LIB_HOME}/TinyTeX
 CTAN_REPO=http://localhost:8081/repository/texlive/tlnet
 EOF
 
-### RStudio Install
+### RStudio
 cd /tmp
 wget -q -O rstudio.deb $(nexus_rstudio_latest_amd64)
 gdebi -n ./rstudio.deb

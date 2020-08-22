@@ -1,6 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
+
+Execute this script from Windows as user:
+  wsl -d wsl-proxy -u root -- ./scripts/wsl-proxy-repositories.sh
+
 The idea here is to have apt-cacher-ng cache all of the regular sources.list
 repos and use Nexus for those using https without double caching.
 
@@ -10,13 +14,13 @@ It will
 - setup systemd nexus repository
 - add a log monitor.
 
-Execute this script from Windows as user:
-  wsl -d wsl-proxy -u root -- ./scripts/wsl-proxy-repositories.sh
+* Since this is actually setting up the proxy it only uses direct URLs.
 
 The following will start both services and keep the terminal open for viewing.
-wsl -d wsl-proxy -u thell -- wsl-tail-repo-logs
 
-//NOTES//
+wsl -d wsl-proxy -u $USER -- wsl-tail-repo-logs
+
+#*************************************************************************
 
 cd ~
 apt update
@@ -64,7 +68,6 @@ TimeoutSec=600
   
 [Install]
 WantedBy=multi-user.target
-
 EOF
 
 mv ~/nexus.service /etc/systemd/system/
@@ -73,7 +76,6 @@ systemctl enable nexus
 
 cat > ~/nexus-start-monitor << EOF
 sed "/^Started Sonatype Nexus.*$/ q" <(tail -f /opt/sonatype-work/nexus3/log/nexus.log)
-
 EOF
 mv ~/nexus-start-monitor /usr/local/bin/
 chmod +x /usr/local/bin/nexus-start-monitor
@@ -82,7 +84,6 @@ cat > ~/wsl-tail-repo-logs << EOF
 tail -f /var/log/apt-cacher-ng/apt-cacher.log \
   /var/log/apt-cacher-ng/apt-cacher.err \
   /opt/sonatype-work/nexus3/log/request.log
-
 EOF
 mv ~/wsl-tail-repo-logs /usr/local/bin/
 chmod +x /usr/local/bin/wsl-tail-repo-logs

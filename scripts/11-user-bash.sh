@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
 Execute this script from Windows as root:
 wsl -d Ubuntu -u $USER -- ./scripts/11-user-bash.sh
@@ -8,9 +8,10 @@ wsl -d Ubuntu -u $USER -- ./scripts/11-user-bash.sh
 It will
 - setup git
 
-//NOTES//
+#*************************************************************************
 
-# Git setup
+### Git setup
+# Default to the same settings as the Windows git.
 USER_NAME=$(git.exe config user.name)
 USER_EMAIL=$(git.exe config user.email)
 CRED_MGR="/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager.exe"
