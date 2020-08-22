@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
 Execute this script from Windows using:
 wsl -d Ubuntu -u root -- ./scripts/nexus-repositories/focal-rspm40-r-proxy.sh
@@ -12,14 +12,11 @@ It will
 - setup a RStudio Package Manager proxy repository on Nexus
 
 Usage on client:
+  # Nexus sends a fixed User Agent so we only need to set the repos option.
   options(repos = c(REPO_NAME = "http://localhost:8081/repository/focal-rspm-4.0-binary/"))
 
-Nexus sends a fixed User Agent so we only need to set the repos option.
+#*************************************************************************
 
-then test...
-  sw.start <- Sys.time(); install.packages("usethis", quiet=TRUE); sw.end <- Sys.time(); sw.end - sw.start
-
-//NOTES//
 
 REPO_JSON_PATH="/tmp/repo.json"
 cat > ${REPO_JSON_PATH} << \EOF

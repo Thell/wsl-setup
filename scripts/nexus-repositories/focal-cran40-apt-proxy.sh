@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
 Execute this script from Windows using:
 wsl -d Ubuntu -u root -- ./scripts/nexus-repositories/focal-cran40-apt-proxy.sh
@@ -14,7 +14,7 @@ It will
 Usage on client:
   sudo apt-add-repository "deb http://localhost:8081/repository/focal-cran-4.0-proxy focal-cran40/"
 
-//NOTES//
+#*************************************************************************
 
 REPO_JSON_PATH="/tmp/repo.json"
 cat > ${REPO_JSON_PATH} << \EOF

@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
 Execute this script from Windows using:
 wsl -d Ubuntu -u root -- ./scripts/nexus-repositories/focal-texlive-proxy.sh
@@ -14,7 +14,7 @@ It will
 Usage on client via environment variable (or set via tlmgr):
   export CTAN_REPO=http://localhost:8081/repository/texlive/tlnet
 
-//NOTES//
+#*************************************************************************
 
 REPO_JSON_PATH="/tmp/repo.json"
 cat > ${REPO_JSON_PATH} << \EOF
@@ -48,7 +48,6 @@ cat > ${REPO_JSON_PATH} << \EOF
   },
   "routingRule": "string"
 }
-
 EOF
 
 curl "http://localhost:8081/service/rest/beta/repositories/raw/proxy" \

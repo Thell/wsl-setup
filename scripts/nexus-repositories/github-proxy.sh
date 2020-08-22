@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
 Execute this script from Windows using:
 wsl -d Ubuntu -u root -- ./scripts/nexus-repositories/github-proxy.sh
@@ -14,12 +14,13 @@ It will
 Usage on client should be for releases and bundles:
   http://localhost:8081/repository/github
 
-//NOTES//
+#*************************************************************************
+
 
 REPO_JSON_PATH="/tmp/repo.json"
 cat > ${REPO_JSON_PATH} << \EOF
 {
-  "name": "github",
+  "name": "github.com",
   "online": true,
   "storage": {
     "blobStoreName": "default",

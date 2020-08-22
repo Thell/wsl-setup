@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-: << '//NOTES//'
+: <<\#*************************************************************************
 
 Execute this script from Windows using:
 wsl -d Ubuntu -u root -- ./scripts/nexus-repositories/tinytex-proxy.sh
@@ -12,14 +12,14 @@ It will
 - setup a proxy repository on Nexus to https://yihui.org/tinytex
 
 Usage on client should be for releases and bundles:
-  http://localhost:8081/repository/github
+  http://localhost:8081/repository/tinytex
 
-//NOTES//
+#*************************************************************************
 
 REPO_JSON_PATH="/tmp/repo.json"
 cat > ${REPO_JSON_PATH} << \EOF
 {
-  "name": "tinytex",
+  "name": "yihui.org",
   "online": true,
   "storage": {
     "blobStoreName": "default",
@@ -27,7 +27,7 @@ cat > ${REPO_JSON_PATH} << \EOF
   },
   "cleanup": null,
   "proxy": {
-    "remoteUrl": "https://yihui.org/tinytex",
+    "remoteUrl": "https://yihui.org",
     "contentMaxAge": 1440,
     "metadataMaxAge": 1440
   },
@@ -48,7 +48,6 @@ cat > ${REPO_JSON_PATH} << \EOF
   },
   "routingRule": "string"
 }
-
 EOF
 
 curl "http://localhost:8081/service/rest/beta/repositories/raw/proxy" \
