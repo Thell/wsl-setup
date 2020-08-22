@@ -1,9 +1,11 @@
 $Distro="Ubuntu"
+$DO_EXPORT=$true
+$Export_Destination_Path=$Env:HOMEPATH + "\Workspaces\WSL\User-Ubuntu-Focal-2004-install.tar.gz"
 $USER=(git.exe config user.name).tolower()
 
 # This will completely remove the existing Distro and rebuild it.
 # If it doesn't exist there will be errors printed but it will continue.
-cls;
+Clear-Host;
 wsl -t $Distro
 wsl --unregister $Distro
 
@@ -30,5 +32,10 @@ wsl -d $Distro -u $USER -- ./scripts/10-user-profile.sh
 
 Write-Host 'User Bash' -ForegroundColor "White" -BackgroundColor "Blue"
 wsl -d $Distro -u $USER -- ./scripts/11-user-bash.sh
+
+if ($DO_EXPORT) {
+  Write-Host 'Exporting' -ForegroundColor "White" -BackgroundColor "Blue"
+  wsl --export $Distro $Export_Destination_Path
+}
 
 Write-Host 'Complete: ' + $sw.Elapsed.Duration().ToString() -ForegroundColor "White" -BackgroundColor "Blue"
