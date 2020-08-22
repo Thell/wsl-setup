@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-. ./scripts/99-nexus-translate.sh
 
 : <<\#*************************************************************************
 
 Execute this script from Windows as user:
-  wsl -d Ubuntu -u root -- ./scripts/RStudio.sh
+  wsl -d Ubuntu -u root -- ./scripts/wsl-rstudio-user.sh
 
 It will
 - setup RStudio prefs
@@ -27,7 +26,7 @@ TINYTEX_HOME=${XDG_LIB_HOME}/TinyTeX
 mkdir -p ${TINYTEX_HOME}
 mkdir -p ${XDG_DATA_HOME}/info
 mkdir -p ${XDG_DATA_HOME}/man
-wget -O TinyTeX.tar.gz $(nexus_tinytex_latest)
+wget -O TinyTeX.tar.gz $(wsl-proxied-url tinytex)
 tar zxf TinyTeX.tar.gz -C ${TINYTEX_HOME} --strip=1
 
 # Customize install paths.

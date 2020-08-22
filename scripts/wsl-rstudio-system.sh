@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-. ./scripts/99-nexus-translate.sh
 
 : <<\#*************************************************************************
 
@@ -43,8 +42,8 @@ ln -s /usr/lib/R/site-library/littler/examples/installGithub.r /usr/local/bin/in
 ln -s /usr/lib/R/site-library/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r
 chgrp 1000 /usr/local/lib/R/site-library
 
-RPROFILE_SITE=/etc/R/Rprofile.site
-cat >> ${RPROFILE_SITE} << \EOF
+RPROFILE_SITE="/etc/R/Rprofile.site"
+cat >> "${RPROFILE_SITE}" << \EOF
 
 # Use RStudio Package Manager Binaries, try nexus proxy repository first.
 local({
@@ -67,8 +66,8 @@ packages=(
 )
 install.r ${packages[@]%,}
 
-RENVIRON_SITE=/etc/R/Renviron.site
-cat >> ${RENVIRON_SITE} << \EOF
+RENVIRON_SITE="/etc/R/Renviron.site"
+cat >> "${RENVIRON_SITE}" << \EOF
 
 # Honor $XDG_
 R_ENVIRON_USER=${XDG_CONFIG_HOME}/R/Renviron
@@ -91,6 +90,6 @@ EOF
 
 ### RStudio
 cd /tmp
-wget -q -O rstudio.deb $(nexus_rstudio_latest_amd64)
+wget -O rstudio.deb $(wsl-proxied-url rstudio)
 gdebi -n ./rstudio.deb
 ln -s /usr/lib/rstudio/bin/rstudio /usr/local/bin/rstudio
