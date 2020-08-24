@@ -124,3 +124,20 @@ printf "${URL}\n\tout=mathjax-contrib.tar.gz\n" >> input.txt
 
 aria2c -q -x 4 -i input.txt
 ```
+
+This is all fine and dandy if working with sources hosted on github but what about when they aren't?
+
+RStudio provides download pages for stable, preview and daily builds. They also provide links to download the latest build of each for a variety of platforms. These builds are hosted on Amazon AWS and accessed via redirection from rstudio.org.
+
+Caching both the tag and package in the Nexus repository is done by using a github repo for the tags, a repository for `raw.githubusercontent.com` and another for `s3.amazonaws.com`. A script to generate a json containing the latest direct urls is updated daily, then the raw content is requested, which gets cached, and the desired RStudio build is directly downloaded, which is also cached, with a package name that contains the version.
+
+With these few things setup the usage is just as straight forward as the earlier pandoc example...
+
+```bash
+  "rstudio")
+    path=".preview.desktop.bionic.rstudio"
+    url=https://raw.githubusercontent.com/thell/rstudio-latest-urls/master/latest.json
+    [[ ${base_url:-} ]] && url=${url/"http"?":/"/"${base_url}"}
+    : $(jq -r ${path} <(curl -s ${url}))
+  ;;
+```
