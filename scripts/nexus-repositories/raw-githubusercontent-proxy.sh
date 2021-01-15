@@ -20,7 +20,7 @@ Usage on client should be for single source calls:
 REPO_JSON_PATH="/tmp/repo.json"
 cat > ${REPO_JSON_PATH} << \EOF
 {
-  "name": "raw.github.com",
+  "name": "raw.githubusercontent.com",
   "online": true,
   "storage": {
     "blobStoreName": "default",
